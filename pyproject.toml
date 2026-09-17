@@ -24,7 +24,7 @@ dev = [
 ]
 
 [project.scripts]
-econo-agent = "src.agent.orchestrator:main"
+ecoagent = "src.agent.orchestrator:main"
 
 [build-system]
 requires = ["setuptools>=68"]
