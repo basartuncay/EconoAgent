@@ -1,8 +1,8 @@
-# EcoAgent
+# EconoAgent
 
-[![CI](https://github.com/basartuncay/EcoAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/basartuncay/EcoAgent/actions/workflows/ci.yml)
+[![CI](https://github.com/basartuncay/EconoAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/basartuncay/EconoAgent/actions/workflows/ci.yml)
 
-EcoAgent is an autonomous econometric research agent built on Claude's tool-use API. Given a ticker symbol, it decides on its own which tools to call and in what order — fetching price data, computing descriptive statistics, fitting an ARMA-EGARCH volatility model — and produces a Markdown analysis report.
+EconoAgent is an autonomous econometric research agent built on Claude's tool-use API. Given a ticker symbol, it decides on its own which tools to call and in what order — fetching price data, computing descriptive statistics, fitting an ARMA-EGARCH volatility model — and produces a Markdown analysis report.
 
 ## Architecture
 
@@ -59,8 +59,8 @@ All 25 tests pass locally and in CI (GitHub Actions, see badge above). Tests moc
 
 ```bash
 # clone and install
-git clone https://github.com/basartuncay/EcoAgent.git
-cd EcoAgent
+git clone https://github.com/basartuncay/EconoAgent.git
+cd EconoAgent
 pip install -e ".[dev]"
 
 # configure your API key
@@ -72,7 +72,7 @@ cp .env.example .env
 Run the agent:
 
 ```bash
-ecoagent
+econoagent
 # or: python -m src.agent.orchestrator
 ```
 
@@ -101,7 +101,7 @@ Not yet implemented — noted here as honest scope, not a roadmap commitment:
 
 - **Sentiment/news analysis integration** — incorporating news or sentiment signals alongside the purely price-based statistics and volatility model.
 - **Real-time data streaming** — the agent currently works over historical bars fetched once per run; there's no live/streaming price feed.
-- **Web interface** — usage today is CLI-only (`ecoagent`); no web UI exists yet.
+- **Web interface** — usage today is CLI-only (`econoagent`); no web UI exists yet.
 
 ## License
 
