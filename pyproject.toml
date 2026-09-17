@@ -1,0 +1,55 @@
+[project]
+name = "econo-agent"
+version = "0.1.0"
+description = "Claude tool-use agent for autonomous econometric analysis of market data."
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40",
+    "pydantic>=2.6",
+    "python-dotenv>=1.0",
+    "yfinance>=0.2.40",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "statsmodels>=0.14",
+    "arch>=6.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-mock>=3.14",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[project.scripts]
+econo-agent = "src.agent.orchestrator:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# BLE001 (blind except) is intentionally violated at tool boundaries: every
+# tool handler catches broad Exception and converts it to a ToolError so a
+# third-party library failure (yfinance/statsmodels/arch) never crashes the
+# agent loop. See src/agent/tools/*.py and Orchestrator._dispatch_tool_call.
+# UP017: we spell UTC as `timezone.utc`, not the `datetime.UTC` alias, by
+# explicit choice -- both work on py311+, this is just the preferred spelling.
+ignore = ["BLE001", "UP017"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+ignore_missing_imports = true
