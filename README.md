@@ -102,3 +102,7 @@ Not yet implemented — noted here as honest scope, not a roadmap commitment:
 - **Sentiment/news analysis integration** — incorporating news or sentiment signals alongside the purely price-based statistics and volatility model.
 - **Real-time data streaming** — the agent currently works over historical bars fetched once per run; there's no live/streaming price feed.
 - **Web interface** — usage today is CLI-only (`ecoagent`); no web UI exists yet.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
