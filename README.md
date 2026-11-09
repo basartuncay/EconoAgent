@@ -78,6 +78,33 @@ econoagent
 
 You'll be prompted for a ticker symbol; the agent runs its tool-use loop and prints the resulting Markdown report.
 
+### Web demo
+
+A small Streamlit front end (`streamlit_app.py`) wraps the same `Orchestrator`:
+
+```bash
+pip install -e ".[web]"
+streamlit run streamlit_app.py
+```
+
+Visitors can paste their own Anthropic API key (used for that run only, never stored) or use the
+server's `ANTHROPIC_API_KEY`. Spend on the server key is bounded by:
+
+- **ticker validation** at the input boundary (`src/web/guard.py`) — only short Yahoo-style symbols reach the model,
+- a **24h report cache per ticker** — repeat tickers cost nothing,
+- **`DEMO_DAILY_LIMIT`** (default 20) uncached runs per day on the server key; after that, visitors need their own key.
+
+**Deploy (Streamlit Community Cloud, free):** New app → this repo → branch `main` → main file
+`streamlit_app.py`. Under *Advanced settings → Secrets* add:
+
+```toml
+ANTHROPIC_API_KEY = "sk-ant-..."
+DEMO_DAILY_LIMIT = "20"
+```
+
+Dependencies are installed from `requirements.txt` (which installs this package with the `web` extra).
+Leave `ANTHROPIC_API_KEY` out to run a bring-your-own-key-only demo with zero spend for you.
+
 Run the test suite:
 
 ```bash
@@ -93,7 +120,8 @@ pytest -v
 - statsmodels (ARMA)
 - arch (EGARCH)
 - pytest / pytest-mock / pytest-cov
-- GitHub Actions (CI)
+- Streamlit (web demo)
+- GitHub Actions (CI: ruff, mypy, pytest, web-demo boot check)
 
 ## Future Work
 
@@ -101,7 +129,7 @@ Not yet implemented — noted here as honest scope, not a roadmap commitment:
 
 - **Sentiment/news analysis integration** — incorporating news or sentiment signals alongside the purely price-based statistics and volatility model.
 - **Real-time data streaming** — the agent currently works over historical bars fetched once per run; there's no live/streaming price feed.
-- **Web interface** — usage today is CLI-only (`econoagent`); no web UI exists yet.
+- **Shared rate limiting** — the web demo's daily cap is an in-process counter (per instance, reset on restart); a multi-replica deployment would need a shared store.
 
 ## License
 
