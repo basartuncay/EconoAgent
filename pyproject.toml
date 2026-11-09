@@ -23,6 +23,10 @@ dev = [
     "mypy>=1.11",
 ]
 
+web = [
+    "streamlit>=1.40",
+]
+
 [project.scripts]
 econoagent = "src.agent.orchestrator:main"
 

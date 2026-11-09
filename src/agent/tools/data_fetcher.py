@@ -22,7 +22,12 @@ logger = logging.getLogger(__name__)
 # request the same ticker/range as fetch_price_data (or as each other) within
 # one agent run without re-hitting yfinance, and without the LLM ever having
 # to pass raw OHLCV bars back in as a tool argument.
-_price_data_cache: dict[tuple[str, date | None, date | None, str], FetchPriceDataOutput] = {}
+# Key also carries today's date so an open-ended range (end_date=None) is
+# refetched daily when this runs inside a long-lived web server.
+_price_data_cache: dict[
+    tuple[str, date | None, date | None, str, date], FetchPriceDataOutput
+] = {}
+_PRICE_CACHE_MAX_ENTRIES = 256
 
 # JSON schema handed to the Claude API for this tool. Mirrors
 # FetchPriceDataInput so the model's tool_use.input can be validated
@@ -131,12 +136,20 @@ def fetch_price_data_cached(params: FetchPriceDataInput) -> FetchPriceDataOutput
         Failures are never cached, so a transient error doesn't stick
         around for the rest of the run.
     """
-    cache_key = (params.ticker, params.start_date, params.end_date, params.interval.value)
+    cache_key = (
+        params.ticker,
+        params.start_date,
+        params.end_date,
+        params.interval.value,
+        date.today(),
+    )
     cached = _price_data_cache.get(cache_key)
     if cached is not None:
         return cached
 
     result = fetch_price_data(params)
     if isinstance(result, FetchPriceDataOutput):
+        if len(_price_data_cache) >= _PRICE_CACHE_MAX_ENTRIES:
+            _price_data_cache.clear()  # crude bound; memory safety beats hit rate here
         _price_data_cache[cache_key] = result
     return result

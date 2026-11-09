@@ -69,7 +69,8 @@ class ToolSpec:
     name: str
     definition: dict[str, Any]
     input_model: type[BaseModel]
-    handler: Callable[[BaseModel], BaseModel | ToolError]
+    # Any: each handler takes its own concrete input model (Callable is contravariant).
+    handler: Callable[[Any], BaseModel | ToolError]
 
 
 def default_tool_specs() -> list[ToolSpec]:
@@ -166,8 +167,8 @@ class Orchestrator:
                 reaching a final answer.
         """
         self._tool_failure_counts = {}
-        tool_definitions = [spec.definition for spec in self.tool_specs]
-        messages: list[dict[str, Any]] = [
+        tool_definitions: list[Any] = [spec.definition for spec in self.tool_specs]
+        messages: list[Any] = [
             {"role": "user", "content": f"Analyze ticker: {ticker}"}
         ]
 
